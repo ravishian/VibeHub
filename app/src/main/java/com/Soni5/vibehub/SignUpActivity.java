@@ -129,6 +129,7 @@ public class SignUpActivity extends AppCompatActivity {
                             v.put("Username",editTextusername.getText().toString());
                             v.put("Number",editTextMobileNumber.getText().toString());
                             v.put("Bio","Hello world");
+                            v.put("Link","www.google.com");
 
 
                            firestore.collection("User").document(mAuth.getUid()).set(v).addOnCompleteListener(new OnCompleteListener<Void>() {
