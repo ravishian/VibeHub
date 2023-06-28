@@ -9,9 +9,13 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class SplashActivity extends AppCompatActivity {
 
     Button btn;
+    FirebaseAuth firebaseAuth;
+
 
 
     @SuppressLint("MissingInflatedId")
@@ -21,18 +25,31 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         btn  =  findViewById(R.id.button);
+        firebaseAuth = FirebaseAuth.getInstance();
+        String user = firebaseAuth.getUid();
 
 
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                // Start the main activity or any other desired activity
+//                Intent intent = new Intent(SplashActivity.this, SignUpActivity.class);
+//                startActivity(intent);
+//                finish();
+//            }
+//        }, 2000);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // Start the main activity or any other desired activity
-                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        }, 2000);
+        if(user != null)
+        {
+            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        else
+        {
+            Intent i = new Intent(SplashActivity.this,SignUpActivity.class);
+                startActivity(i);
+        }
 
 
 //        btn.setOnClickListener(new View.OnClickListener()

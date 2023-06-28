@@ -4,11 +4,22 @@
         android:icon="@drawable/ic_home"
         android:title="Home" />
     <item
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_search"
         android:icon="@drawable/ic_home"
-        android:title="Dashboard" />
+        android:title="Search" />
+    <item
+        android:id="@+id/navigation_Vibe"
+        android:icon="@drawable/ic_home"
+        android:title="Vibe" />
+
     <item
         android:id="@+id/navigation_notifications"
         android:icon="@drawable/ic_home"
         android:title="Notifications" />
+
+    <item
+        android:id="@+id/navigation_profile"
+        android:icon="@drawable/ic_home"
+        android:title="Profile" />
+
 </menu>
