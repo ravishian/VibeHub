@@ -2,7 +2,6 @@ package com.Soni5.vibehub.Fragment;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,9 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.Soni5.vibehub.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 
@@ -80,6 +79,28 @@ public class SearchFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // This method is called when the text is being changed
+
+
+                String newText = s.toString();
+                // Perform actions based on the new text
+               firestore.collection("User").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                   @Override
+                   public void onSuccess(QuerySnapshot queryDocumentSnapshots)
+                   {
+                       for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots)
+                       {
+                           String data = documentSnapshot.getString("Username");
+                           if (data.contains(s.toString()))
+                           {
+                               Toast.makeText(getActivity(), "hega", Toast.LENGTH_SHORT).show();
+                           }
+                           else
+                           {
+                               Toast.makeText(getActivity(), "koj ni hega", Toast.LENGTH_SHORT).show();
+                           }
+                       }
+                   }
+               });
             }
 
             @Override
@@ -87,21 +108,21 @@ public class SearchFragment extends Fragment {
                 // This method is called after the text has been changed
                 String newText = s.toString();
                 // Perform actions based on the new text
-                Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
-                firestore.collection("User").whereEqualTo("Username",s).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task)
-                    {
-
-                        if(task.getResult().isEmpty())
-                        {
-                            textView.setText("Empty va smaan");
-                        } else if (!task.getResult().isEmpty())
-                        {
-                            textView.setText(task.getResult().toString());
-                        }
-                    }
-                });
+//                Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
+//                firestore.collection("User").whereArrayContains("Username",s.toString()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task)
+//                    {
+//
+//                        if(task.getResult().isEmpty())
+//                        {
+//                            textView.setText("Empty va smaan");
+//                        } else if (!task.getResult().isEmpty())
+//                        {
+//                            textView.setText(task.getResult().toString());
+//                        }
+//                    }
+//                });
 
 
 
