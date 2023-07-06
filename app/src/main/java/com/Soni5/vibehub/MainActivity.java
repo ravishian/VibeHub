@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
                 int itemId = item.getItemId();
                 if (itemId == R.id.navigation_home) {
-                    frag(profileFragment);
+                    frag(homeFragment);
                     return true;
 
 
