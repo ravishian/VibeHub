@@ -70,15 +70,26 @@ public class SearchProfileFragment extends Fragment {
         firestore = FirebaseFirestore.getInstance();
 
         HashMap<String , Object> v = new HashMap<>();
+        HashMap<String , Object> w = new HashMap<>();
 
         firebaseAuth = FirebaseAuth.getInstance();
 
 
         ArrayList<String> a = new ArrayList<>();
-        a.add(firebaseAuth.getUid());
+        a.add(id);
 
         v.put("Follower", a);
-        v.put("id",id);
+        v.put("id",firebaseAuth.getUid());
+
+
+        ArrayList<String> b = new ArrayList<>();
+        b.add(firebaseAuth.getUid());
+
+        w.put("Following", id);
+        w.put("id",b);
+
+
+
 
         firestore.collection("User").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -101,7 +112,12 @@ public class SearchProfileFragment extends Fragment {
                 Toast.makeText(getActivity(), "fdggdg", Toast.LENGTH_SHORT).show();
 
 
-                firestore.collection("Following").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+
+
+
+
+
+                firestore.collection("Follow").document(firebaseAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task)
                     {
@@ -113,11 +129,20 @@ public class SearchProfileFragment extends Fragment {
                         else
                         {
 
-                            firestore.collection("Following").document(id).set(v).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            firestore.collection("Follow").document(firebaseAuth.getUid()).set(v).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
 
                                     Toast.makeText(getActivity(), "Ho gya", Toast.LENGTH_SHORT).show();
+
+                                    firestore.collection("Following").document(id).set(w).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+
+                                            Toast.makeText(getActivity(), "Ho gya", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }) ;
+
                                 }
                             }) ;
 
@@ -127,23 +152,7 @@ public class SearchProfileFragment extends Fragment {
                         DocumentSnapshot document = task.getResult();
                         List<String >  Follower = (List<String>) document.get("Follower");
 
-//                        if(Follower !=null)
-//                        {
-//                            if( Follower.contains(id))
-//                            {
-//                                followbtn.setText("Message");
-//                            }
-//                            else
-//                            {
-//                                firestore.collection("Following").document(id).set(v).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                    @Override
-//                                    public void onComplete(@NonNull Task<Void> task) {
-//
-//                                        Toast.makeText(getActivity(), "Ho gya", Toast.LENGTH_SHORT).show();
-//                                    }
-//                                }) ;
-//                            }
-//                        }
+
                     }
                 });
 
