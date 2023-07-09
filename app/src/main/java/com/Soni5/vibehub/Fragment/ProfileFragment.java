@@ -37,7 +37,7 @@ public class ProfileFragment extends Fragment {
     FirebaseFirestore firestore;
     FirebaseAuth firebaseAuth;
 
-    TextView name , bio , username;
+    TextView name , bio , username,following,follower;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -53,6 +53,9 @@ public class ProfileFragment extends Fragment {
         name = view.findViewById(R.id.textViewUsername);
         bio = view.findViewById(R.id.textViewBio);
         username = view.findViewById(R.id.Username);
+        following = view.findViewById(R.id.textViewFollowingCount);
+        follower = view.findViewById(R.id.textViewFollowersCount);
+
 
         firestore.collection("User").document(firebaseAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -76,7 +79,8 @@ public class ProfileFragment extends Fragment {
                 {
                     DocumentSnapshot document = task.getResult();
                     List<String > Follower = (List<String>) document.get("Follower");
-                    Log.d("TAG", String.valueOf(Follower.size()));
+                  //  Log.d("TAG", String.valueOf(Follower.size()));
+                    following.setText(String.valueOf(Follower.size() + " Following"));
 
 
                   //  Toast.makeText(getActivity(), Follower.size(), Toast.LENGTH_SHORT).show();
@@ -84,6 +88,29 @@ public class ProfileFragment extends Fragment {
                 else
                 {
                     Toast.makeText(getActivity(), "hellop zero", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        firestore.collection("Following").document(firebaseAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            {
+                if (task.getResult().exists())
+                {
+                    DocumentSnapshot document = task.getResult();
+                    List<String > Follower = (List<String>) document.get("Following");
+                    //  Log.d("TAG", String.valueOf(Follower.size()));
+                    following.setText(String.valueOf(Follower.size() + " Following"));
+
+
+                    //  Toast.makeText(getActivity(), Follower.size(), Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                 //   following.setText(String.valueOf(Follower.size() + " Following"));
+
+                    follower.setText(String.valueOf("0" + " Follower"));
                 }
             }
         });
