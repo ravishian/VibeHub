@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="650dp"
+    android:layout_height="670dp"
     tools:ignore="InvalidId">
 
 
@@ -67,6 +67,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="408dp"
         android:layout_height="132dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.666"

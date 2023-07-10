@@ -9,11 +9,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/postrecycler"
-        android:layout_width="418dp"
-        android:layout_height="577dp"
+        android:layout_width="410dp"
+        android:layout_height="591dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
 
@@ -22,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
 
@@ -53,6 +52,6 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
->
+    >
 
 </androidx.constraintlayout.widget.ConstraintLayout>
