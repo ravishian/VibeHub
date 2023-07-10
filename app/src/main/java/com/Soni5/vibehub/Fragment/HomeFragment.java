@@ -56,7 +56,7 @@ public class HomeFragment extends Fragment {
     }
 
 
-    ImageButton post;
+    ImageView post;
     Uri uri;
     StorageReference storageReference;
     ImageView imageView;

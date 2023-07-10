@@ -1,5 +1,7 @@
 package com.Soni5.vibehub.Adapter;
 
+import static com.Soni5.vibehub.R.*;
+
 import android.annotation.SuppressLint;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,7 +41,7 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.postholder>{
     @NonNull
     @Override
     public postholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.post_row,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(layout.post_row,parent,false);
         return new postholder(view);
     }
 
@@ -47,16 +49,54 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.postholder>{
     public void onBindViewHolder(@NonNull postholder holder, @SuppressLint("RecyclerView") int position)
     {
 
+        FirebaseAuth firebaseAuth;
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseFirestore firestore;
+        firestore = FirebaseFirestore.getInstance();
+
            Picasso.get().load(datalist.get(position).getLink()).into(holder.profileImageView);
            Picasso.get().load(datalist.get(position).getDP()).into(holder.postImageView);
            holder.usernameTextView.setText(datalist.get(position).getUsername());
            holder.usernamenextTextView.setText(datalist.get(position).getUsername());
+
+           firestore.collection("Post").document((datalist.get(position).getId())).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+               @Override
+               public void onComplete(@NonNull Task<DocumentSnapshot> task)
+               {
+                   if (task.getResult().exists())
+                   {
+                       DocumentSnapshot document = task.getResult();
+                       List<String > Likes = (List<String>) document.get("Likes");
+
+                       if ( Likes != null && Likes.contains(firebaseAuth.getUid()))
+                       {
+                           holder.likeImageView.setImageResource(drawable.liked);
+                           holder.likeCountTextView.setText(Likes.size() + " Likes");
+                       }
+                       else
+                       {
+                           holder.likeImageView.setImageResource(drawable.ic_like);
+                           holder.likeCountTextView.setText(Likes.size()+ " Likes");
+                       }
+
+                   }
+                   else
+                   {
+                       holder.likeImageView.setImageResource(drawable.ic_like);
+                       holder.likeCountTextView.setText("0"+ " Likes");
+                   }
+               }
+           });
+
+
 
 
         holder.likeImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
+                holder.likeImageView.setImageResource(drawable.liked);
+
                 FirebaseAuth firebaseAuth;
                 firebaseAuth = FirebaseAuth.getInstance();
                 FirebaseFirestore firestore;
@@ -81,13 +121,15 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.postholder>{
                             if (Likes == null)
                             {
                                 j.put("Likes",v);
-                                Log.d("TAGq", "onComplete:  No Likesse");
+                                //Log.d("TAGq", "onComplete:  No Likesse");
 
                                 firestore.collection("Post").document(datalist.get(position).getId()).update(j).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused)
                                     {
                                         Log.d("TAGqe", "onComplete:  No Likesse");
+                                        holder.likeCountTextView.setText("1"+ " Likes");
+
                                     }
                                 });
                             }
@@ -95,14 +137,28 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.postholder>{
                             {
                                 if (Likes.contains(firebaseAuth.getUid()))
                                 {
+                                    HashMap<String,Object> g = new HashMap<>();
+                                    g.put("Likes",Likes);
+                                    holder.likeCountTextView.setText(Likes.size() - 1 + " Likes");
 
+                                    Likes.remove(firebaseAuth.getUid());
+
+                                        holder.likeImageView.setImageResource(drawable.ic_like);
+                                        firestore.collection("Post").document(datalist.get(position).getId()).update(g).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused)
+                                            {
+                                                Log.d("TAGqeasasasasasasas", "onComplete:  Noi Likesse");
+                                            }
+                                        });
                                 }
-                                else
+                                else if (Likes.isEmpty() || !Likes.contains(firebaseAuth.getUid()))
                                 {
+                                    holder.likeImageView.setImageResource(drawable.liked);
 
                                     HashMap<String,Object> g = new HashMap<>();
                                     //       v.size();
-                                    Likes.add(v.size(),firebaseAuth.getUid());
+                                    Likes.add(firebaseAuth.getUid());
                                     g.put("Likes",Likes);
 
                                     firestore.collection("Post").document(datalist.get(position).getId()).update(g).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -110,6 +166,7 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.postholder>{
                                         public void onSuccess(Void unused)
                                         {
                                             Log.d("TAGqe", "onComplete:  Noi Likesse");
+                                            holder.likeCountTextView.setText(Likes.size() + " Likes");
                                         }
                                     });
                                 }
@@ -142,18 +199,18 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.postholder>{
 
     class postholder extends RecyclerView.ViewHolder {
 
-       ImageView profileImageView =itemView.findViewById(R.id.profileImageView);
-       TextView usernameTextView = itemView.findViewById(R.id.usernameTextView);
-        ImageView postImageView = itemView.findViewById(R.id.postImageView);
-        ImageView likeImageView = itemView.findViewById(R.id.likeImageView);
+       ImageView profileImageView =itemView.findViewById(id.profileImageView);
+       TextView usernameTextView = itemView.findViewById(id.usernameTextView);
+        ImageView postImageView = itemView.findViewById(id.postImageView);
+        ImageView likeImageView = itemView.findViewById(id.likeImageView);
 //        ImageView commentImageView = itemView.findViewById(R.id.commentImageView);
 //        ImageView shareImageView = itemView.findViewById(R.id.shareImageView);
 //        ImageView saveImageView = itemView.findViewById(R.id.saveImageView);
-//        TextView likeCountTextView = itemView.findViewById(R.id.likeCountTextView);
+        TextView likeCountTextView = itemView.findViewById(R.id.likeCountTextView);
 //        TextView captionTextView = itemView.findViewById(R.id.captionTextView);
 //        TextView locationTextView = itemView.findViewById(R.id.locationTextView);
 //        TextView timestampTextView = itemView.findViewById(R.id.timestampTextView)
-        TextView usernamenextTextView = itemView.findViewById(R.id.usernamenext);
+        TextView usernamenextTextView = itemView.findViewById(id.usernamenext);
 
 
 

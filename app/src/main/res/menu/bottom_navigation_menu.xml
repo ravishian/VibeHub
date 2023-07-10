@@ -5,21 +5,21 @@
         android:title="Home" />
     <item
         android:id="@+id/navigation_search"
-        android:icon="@drawable/ic_home"
+        android:icon="@drawable/ic_search"
         android:title="Search" />
     <item
         android:id="@+id/navigation_Vibe"
-        android:icon="@drawable/ic_home"
+        android:icon="@drawable/ic_play"
         android:title="Vibe" />
 
     <item
         android:id="@+id/navigation_notifications"
-        android:icon="@drawable/ic_home"
+        android:icon="@drawable/ic_notification"
         android:title="Notifications" />
 
     <item
         android:id="@+id/navigation_profile"
-        android:icon="@drawable/ic_home"
+        android:icon="@drawable/profile_picture"
         android:title="Profile" />
 
 </menu>
