@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,16 +78,68 @@ public class SearchProfileFragment extends Fragment {
 
         ArrayList<String> a = new ArrayList<>();
         a.add(id);
-
         v.put("Follower", a);
         v.put("id",firebaseAuth.getUid());
 
-
         ArrayList<String> b = new ArrayList<>();
         b.add(firebaseAuth.getUid());
-
         w.put("Following", id);
         w.put("id",b);
+
+        firestore.collection("Following").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            {
+                if (task.getResult().exists())
+                {
+                    DocumentSnapshot document = task.getResult();
+                    List<String > Follower = (List<String>) document.get("id");
+                    //  Log.d("TAG", String.valueOf(Follower.size()));
+                    if (Follower.contains(firebaseAuth.getUid()))
+                        followbtn.setText("Message");
+
+
+
+                    followingCount.setText(String.valueOf(Follower.size() + " Following"));
+
+
+
+
+
+                    //  Toast.makeText(getActivity(), Follower.size(), Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    followingCount.setText("0" + " Following");
+                    //  Toast.makeText(getActivity(), "hellop zero", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        firestore.collection("Follower").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            {
+                if (task.getResult().exists())
+                {
+
+                    DocumentSnapshot document = task.getResult();
+                    List<String > Follower = (List<String>) document.get("id");
+                    //  Log.d("TAG", String.valueOf(Follower.size()));
+                    followerCount.setText(String.valueOf(Follower.size() + " Follower"));
+
+
+                    //  Toast.makeText(getActivity(), Follower.size(), Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    //   following.setText(String.valueOf(Follower.size() + " Following"));
+
+                    followerCount.setText(String.valueOf("0" + " Follower"));
+                }
+            }
+        });
+
 
 
 
@@ -100,64 +153,139 @@ public class SearchProfileFragment extends Fragment {
                  username.setText(task.getResult().getString("Username"));
                  Name.setText(task.getResult().getString("Name"));
                  bio.setText(task.getResult().getString("Bio"));
+
              }
             }
         });
+
+
 
 
         followbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Toast.makeText(getActivity(), "fdggdg", Toast.LENGTH_SHORT).show();
-
-
-
-
-
-
-
                 firestore.collection("Follow").document(firebaseAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task)
                     {
-
                         if (task.getResult().exists())
                         {
-                            Toast.makeText(getActivity(), "Hello worlf", Toast.LENGTH_SHORT).show();
+                            DocumentSnapshot document = task.getResult();
+                            List<String >  Follower = (List<String>) document.get("Follower");
+                           // List<String >  Following = (List<String>) document.get("Following");
+
+                            Log.d("TAG", "onComplete: " + Follower.size());
+                            if (Follower.contains(id))
+                            {
+                                Toast.makeText(getActivity(), "Already followed", Toast.LENGTH_SHORT).show();
+                            }
+                            else if (!Follower.contains(id))
+                            {
+
+
+                                HashMap<String,Object> g = new HashMap<>();
+
+
+                                Follower.add(Follower.size(),id);
+                                g.put("Follower",Follower);
+                                g.put("id",firebaseAuth.getUid());
+
+                                firestore.collection("Follow").document(firebaseAuth.getUid()).update(g).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task)
+                                    {
+
+
+
+                                    }
+                                });
+
+                                firestore.collection("Following").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                                    {
+                                        if (task.getResult().exists())
+                                        {
+                                            DocumentSnapshot document = task.getResult();
+                                            List<String >  Following = (List<String>) document.get("id");
+
+                                            Log.d("TAGaaaaa", "onComplete: " + Following.size());
+
+                                            HashMap<String,Object> h = new HashMap<>();
+                                            Following.add(Following.size(),firebaseAuth.getUid());
+                                            h.put("id",Following);
+
+
+                                            firestore.collection("Following").document(id).update(h).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task)
+                                                {
+
+
+                                                }
+                                            });
+
+                                        }
+                                        else
+                                        {
+                                            firestore.collection("Following").document(id).set(w).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task)
+                                                {
+
+
+                                                }
+                                            });
+                                        }
+
+
+                                    }
+                                });
+
+
+
+
+
+
+
+                            }
+
+
+                            //Log.d("TAG", "onComplete: " + Following.size());
                         }
+
+
+
+
+
                         else
                         {
-
                             firestore.collection("Follow").document(firebaseAuth.getUid()).set(v).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-
-                                    Toast.makeText(getActivity(), "Ho gya", Toast.LENGTH_SHORT).show();
-
+                                public void onComplete(@NonNull Task<Void> task)
+                                {
                                     firestore.collection("Following").document(id).set(w).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
+                                        public void onComplete(@NonNull Task<Void> task)
+                                        {
 
-                                            Toast.makeText(getActivity(), "Ho gya", Toast.LENGTH_SHORT).show();
+
                                         }
-                                    }) ;
+                                    });
 
                                 }
-                            }) ;
+                            });
 
-                            Toast.makeText(getActivity(), "wwe", Toast.LENGTH_SHORT).show();
                         }
-
-                        DocumentSnapshot document = task.getResult();
-                        List<String >  Follower = (List<String>) document.get("Follower");
-
 
                     }
                 });
 
+
             }
         });
+
 
 
 

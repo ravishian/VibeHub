@@ -59,6 +59,10 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.postholder>{
            holder.usernameTextView.setText(datalist.get(position).getUsername());
            holder.usernamenextTextView.setText(datalist.get(position).getUsername());
 
+
+
+
+
            firestore.collection("Post").document((datalist.get(position).getId())).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                @Override
                public void onComplete(@NonNull Task<DocumentSnapshot> task)
@@ -67,16 +71,30 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.postholder>{
                    {
                        DocumentSnapshot document = task.getResult();
                        List<String > Likes = (List<String>) document.get("Likes");
+                       List<String > Saved = (List<String>) document.get("Saved");
+
+
+
+                       if ( Saved != null && Saved.contains(firebaseAuth.getUid()) )
+                       {
+                           holder.saveImageView.setImageResource(drawable.ic_saved);
+
+                       }
+                       else
+                       {
+                           holder.saveImageView.setImageResource(drawable.ic_save);
+
+                       }
 
                        if ( Likes != null && Likes.contains(firebaseAuth.getUid()))
                        {
                            holder.likeImageView.setImageResource(drawable.liked);
                            holder.likeCountTextView.setText(Likes.size() + " Likes");
                        }
-                       else
+                       else if (Likes == null || Likes.isEmpty())
                        {
                            holder.likeImageView.setImageResource(drawable.ic_like);
-                           holder.likeCountTextView.setText(Likes.size()+ " Likes");
+                           holder.likeCountTextView.setText("0"+ " Likes");
                        }
 
                    }
@@ -88,6 +106,78 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.postholder>{
                }
            });
 
+       holder.saveImageView.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view)
+           {
+               firestore.collection("Post").document(datalist.get(position).getId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                   @Override
+                   public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                   {
+                       if (task.getResult().exists())
+                       {
+                           DocumentSnapshot document = task.getResult();
+                           List<String > Saved = (List<String>) document.get("Saved");
+
+                           if (Saved == null || Saved.isEmpty()  )
+                           {
+                               HashMap<String,Object> g = new HashMap<>();
+                               ArrayList<String>  v = new ArrayList<>();
+                               v.add(firebaseAuth.getUid());
+                               g.put("Saved",v);
+
+                               firestore.collection("Post").document(datalist.get(position).getId()).update(g).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                   @Override
+                                   public void onSuccess(Void unused)
+                                   {
+                                       holder.saveImageView.setImageResource(drawable.ic_saved);
+
+                                   }
+                               });
+                           }
+                           else if (Saved.contains(firebaseAuth.getUid()))
+                           {
+                               holder.saveImageView.setImageResource(drawable.ic_save);
+
+                               HashMap<String,Object> g = new HashMap<>();
+                               Saved.remove(firebaseAuth.getUid());
+                               g.put("Saved",Saved);
+
+
+                               firestore.collection("Post").document(datalist.get(position).getId()).update(g).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                   @Override
+                                   public void onSuccess(Void unused)
+                                   {
+
+
+                                   }
+                               });
+
+                           }
+                           else if ( Saved != null || !Saved.isEmpty()   || !Saved.contains(firebaseAuth.getUid()) )
+                           {
+                               holder.saveImageView.setImageResource(drawable.ic_saved);
+
+                               HashMap<String,Object> g = new HashMap<>();
+                               Saved.add(Saved.size(),firebaseAuth.getUid());
+                               g.put("Saved",Saved);
+
+                               firestore.collection("Post").document(datalist.get(position).getId()).update(g).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                   @Override
+                                   public void onSuccess(Void unused)
+                                   {
+
+
+                                   }
+                               });
+                           }
+
+                       }
+
+                   }
+               });
+           }
+       });
 
 
 
@@ -112,10 +202,8 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.postholder>{
                             DocumentSnapshot document = task.getResult();
                             List<String > Likes = (List<String>) document.get("Likes");
 
-                            ArrayList<String>  v = new ArrayList<>();
+                           ArrayList<String>  v = new ArrayList<>();
                             v.add(firebaseAuth.getUid());
-
-
                             HashMap<String,Object> j = new HashMap<>();
 
                             if (Likes == null)
@@ -205,7 +293,7 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.postholder>{
         ImageView likeImageView = itemView.findViewById(id.likeImageView);
 //        ImageView commentImageView = itemView.findViewById(R.id.commentImageView);
 //        ImageView shareImageView = itemView.findViewById(R.id.shareImageView);
-//        ImageView saveImageView = itemView.findViewById(R.id.saveImageView);
+        ImageView saveImageView = itemView.findViewById(R.id.saveImageView);
         TextView likeCountTextView = itemView.findViewById(R.id.likeCountTextView);
 //        TextView captionTextView = itemView.findViewById(R.id.captionTextView);
 //        TextView locationTextView = itemView.findViewById(R.id.locationTextView);

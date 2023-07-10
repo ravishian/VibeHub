@@ -90,7 +90,7 @@ public class SearchFragment extends Fragment {
                     recyclerView1.setVisibility(View.VISIBLE);
 
 
-                    Toast.makeText(getActivity(), "EditText is active", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "EditText is active", Toast.LENGTH_SHORT).show();
                 } else {
                     browse.setVisibility(View.VISIBLE);
                     search.setVisibility(View.GONE);
@@ -145,6 +145,7 @@ public class SearchFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
+                datalist.clear();
                 // This method is called after the text has been changed
                 String newText = s.toString();
                 Toast.makeText(getActivity(), s.toString(), Toast.LENGTH_SHORT).show();

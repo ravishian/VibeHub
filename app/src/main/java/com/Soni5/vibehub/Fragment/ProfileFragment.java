@@ -40,7 +40,7 @@ public class ProfileFragment extends Fragment {
     FirebaseFirestore firestore;
     FirebaseAuth firebaseAuth;
 
-    TextView name , bio , username,following,follower;
+    TextView name , bio , username,following,follower,postcount;
     ImageView imageView;
 
     @SuppressLint("MissingInflatedId")
@@ -60,6 +60,7 @@ public class ProfileFragment extends Fragment {
         following = view.findViewById(R.id.textViewFollowingCount);
         follower = view.findViewById(R.id.textViewFollowersCount);
         imageView = view.findViewById(R.id.imageViewProfilePicture);
+        postcount = view.findViewById(R.id.textViewPostsCount);
        // imageViewProfilePicture
 
 
@@ -88,14 +89,20 @@ public class ProfileFragment extends Fragment {
                     DocumentSnapshot document = task.getResult();
                     List<String > Follower = (List<String>) document.get("Follower");
                   //  Log.d("TAG", String.valueOf(Follower.size()));
-                    following.setText(String.valueOf(Follower.size() + " Following"));
+
+
+                        following.setText(String.valueOf(Follower.size() + " Following"));
+
+
+
 
 
                   //  Toast.makeText(getActivity(), Follower.size(), Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
-                    Toast.makeText(getActivity(), "hellop zero", Toast.LENGTH_SHORT).show();
+                    following.setText("0" + " Following");
+                  //  Toast.makeText(getActivity(), "hellop zero", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -106,10 +113,11 @@ public class ProfileFragment extends Fragment {
             {
                 if (task.getResult().exists())
                 {
+
                     DocumentSnapshot document = task.getResult();
-                    List<String > Follower = (List<String>) document.get("Following");
+                    List<String > Follower = (List<String>) document.get("id");
                     //  Log.d("TAG", String.valueOf(Follower.size()));
-                    following.setText(String.valueOf(Follower.size() + " Following"));
+                    follower.setText(String.valueOf(Follower.size() + " Follower"));
 
 
                     //  Toast.makeText(getActivity(), Follower.size(), Toast.LENGTH_SHORT).show();
@@ -120,6 +128,23 @@ public class ProfileFragment extends Fragment {
 
                     follower.setText(String.valueOf("0" + " Follower"));
                 }
+            }
+        });
+
+
+        firestore.collection("Post").whereEqualTo("Uid",firebaseAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots)
+            {
+                List<DocumentSnapshot> list1 = queryDocumentSnapshots.getDocuments();
+                int a = 0;
+                for (DocumentSnapshot t : list1)
+                {
+                    a++;
+
+                }
+
+                postcount.setText(String.valueOf(a + " Post"));
             }
         });
 
