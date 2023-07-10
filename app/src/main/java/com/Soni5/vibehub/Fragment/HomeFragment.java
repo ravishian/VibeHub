@@ -89,13 +89,37 @@ public class HomeFragment extends Fragment {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+
                 for (DocumentSnapshot d:list)
                 {
-                    Model_Post obj = d.toObject(Model_Post.class);
-                    datalist.add(obj);
+                    firebaseStore.collection("User").whereEqualTo("Id",d.get("Uid")).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots)
+                        {
+                            List<DocumentSnapshot> list1 = queryDocumentSnapshots.getDocuments();
 
+                            for (DocumentSnapshot t : list1)
+                            {
+                              //  Model_Post obj = d.toObject(Model_Post.class);
+                             //   Model_Post obj1 = t.toObject(Model_Post.class);
+                                Log.d("TAG", "onSuccess: "+ t.getString("Username"));
+                                Log.d("TAG", "onSuccess: "+ d.getString("Id"));
+                                datalist.add(new Model_Post(d.getString("Id"),d.getString("Link")
+                                        ,d.getString("Time")
+                                        ,t.getString("Uid")
+                                        ,t.getString("Username")
+                                        ,t.getString("DP")));
+                             //   datalist.add(new Model_Post(obj1));
+                            } adapter.notifyDataSetChanged();
+
+                        }
+                    });
+
+                   // Model_Post obj = d.toObject(Model_Post.class);
+                   // datalist.add(obj);
+                   // datalist.add(new Model_Post(""));
                 }
-                adapter.notifyDataSetChanged();
+
             }
         });
 

@@ -1,6 +1,7 @@
 package com.Soni5.vibehub.Fragment;
 
 import android.annotation.SuppressLint;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -38,6 +41,7 @@ public class ProfileFragment extends Fragment {
     FirebaseAuth firebaseAuth;
 
     TextView name , bio , username,following,follower;
+    ImageView imageView;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -55,6 +59,8 @@ public class ProfileFragment extends Fragment {
         username = view.findViewById(R.id.Username);
         following = view.findViewById(R.id.textViewFollowingCount);
         follower = view.findViewById(R.id.textViewFollowersCount);
+        imageView = view.findViewById(R.id.imageViewProfilePicture);
+       // imageViewProfilePicture
 
 
         firestore.collection("User").document(firebaseAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -66,6 +72,8 @@ public class ProfileFragment extends Fragment {
                     name.setText(task.getResult().getString("Name"));
                     bio.setText(task.getResult().getString("Bio"));
                     username.setText(task.getResult().getString("Username"));
+                    Picasso.get().load(task.getResult().getString("DP")).into(imageView);
+                    //Log.d("TAG", "onComplete: "+task.getResult().getString("DP"));
                 }
 
             }

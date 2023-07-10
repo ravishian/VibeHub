@@ -130,6 +130,7 @@ public class SignUpActivity extends AppCompatActivity {
                             v.put("Number",editTextMobileNumber.getText().toString());
                             v.put("Bio","Hello world");
                             v.put("Link","www.google.com");
+                            v.put("DP","https://firebasestorage.googleapis.com/v0/b/vibehub-81be2.appspot.com/o/man.png?alt=media&token=b4c42469-c4cd-49a2-89a4-beca2c9f5552");
 
 
                            firestore.collection("User").document(mAuth.getUid()).set(v).addOnCompleteListener(new OnCompleteListener<Void>() {
