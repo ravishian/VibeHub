@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,19 +22,25 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.Soni5.vibehub.Adapter.PostAdapter;
+import com.Soni5.vibehub.Models.Model_Post;
 import com.Soni5.vibehub.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -56,7 +63,8 @@ public class HomeFragment extends Fragment {
     RecyclerView recyclerView;
     FirebaseFirestore firebaseStore;
     FirebaseAuth firebaseAuth;
-
+    ArrayList<Model_Post> datalist;
+    PostAdapter adapter;
 
 
 
@@ -72,7 +80,24 @@ public class HomeFragment extends Fragment {
         post = view.findViewById(R.id.imagepost);
         recyclerView = view.findViewById(R.id.postrecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext() ));
+        datalist = new ArrayList<>();
 
+        adapter= new PostAdapter(datalist);
+        recyclerView.setAdapter(adapter);
+
+        firebaseStore.collection("Post").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                for (DocumentSnapshot d:list)
+                {
+                    Model_Post obj = d.toObject(Model_Post.class);
+                    datalist.add(obj);
+
+                }
+                adapter.notifyDataSetChanged();
+            }
+        });
 
         storageReference = FirebaseStorage.getInstance().getReference();
 
