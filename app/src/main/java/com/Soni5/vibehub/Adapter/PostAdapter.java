@@ -106,6 +106,7 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.postholder>{
                }
            });
 
+
        holder.saveImageView.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view)

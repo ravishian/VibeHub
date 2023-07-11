@@ -91,7 +91,7 @@ public class ProfileFragment extends Fragment {
                   //  Log.d("TAG", String.valueOf(Follower.size()));
 
 
-                        following.setText(String.valueOf(Follower.size() + " Following"));
+                        following.setText(String.valueOf("      "+Follower.size() + " \nFollowing"));
 
 
 
@@ -117,7 +117,7 @@ public class ProfileFragment extends Fragment {
                     DocumentSnapshot document = task.getResult();
                     List<String > Follower = (List<String>) document.get("id");
                     //  Log.d("TAG", String.valueOf(Follower.size()));
-                    follower.setText(String.valueOf(Follower.size() + " Follower"));
+                    follower.setText(String.valueOf("       "+Follower.size() +" \nFollower"));
 
 
                     //  Toast.makeText(getActivity(), Follower.size(), Toast.LENGTH_SHORT).show();
@@ -126,7 +126,7 @@ public class ProfileFragment extends Fragment {
                 {
                  //   following.setText(String.valueOf(Follower.size() + " Following"));
 
-                    follower.setText(String.valueOf("0" + " Follower"));
+                    follower.setText(String.valueOf("       0\n" +  " Follower"));
                 }
             }
         });
@@ -144,7 +144,7 @@ public class ProfileFragment extends Fragment {
 
                 }
 
-                postcount.setText(String.valueOf(a + " Post"));
+                postcount.setText(String.valueOf("   "+a + "\n Post"));
             }
         });
 
