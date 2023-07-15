@@ -12,13 +12,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.Soni5.vibehub.Fragment.CommentSheetFragment;
 import com.Soni5.vibehub.Models.Model_Post;
 import com.Soni5.vibehub.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -54,10 +58,29 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.postholder>{
         FirebaseFirestore firestore;
         firestore = FirebaseFirestore.getInstance();
 
+        holder.commentImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+
+            {
+                CommentSheetFragment commentSheetFragment =  new CommentSheetFragment(datalist.get(position).getId());
+                commentSheetFragment.show(((AppCompatActivity) view.getContext()).getSupportFragmentManager(), commentSheetFragment.getTag());
+
+
+            }
+        });
+
+
+
+
+
+
            Picasso.get().load(datalist.get(position).getLink()).into(holder.profileImageView);
            Picasso.get().load(datalist.get(position).getDP()).into(holder.postImageView);
            holder.usernameTextView.setText(datalist.get(position).getUsername());
            holder.usernamenextTextView.setText(datalist.get(position).getUsername());
+
+
 
 
 
@@ -292,7 +315,7 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.postholder>{
        TextView usernameTextView = itemView.findViewById(id.usernameTextView);
         ImageView postImageView = itemView.findViewById(id.postImageView);
         ImageView likeImageView = itemView.findViewById(id.likeImageView);
-//        ImageView commentImageView = itemView.findViewById(R.id.commentImageView);
+        ImageView commentImageView = itemView.findViewById(R.id.commentImageView);
 //        ImageView shareImageView = itemView.findViewById(R.id.shareImageView);
         ImageView saveImageView = itemView.findViewById(R.id.saveImageView);
         TextView likeCountTextView = itemView.findViewById(R.id.likeCountTextView);
