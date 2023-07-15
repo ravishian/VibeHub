@@ -323,6 +323,7 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.postholder>{
 //        TextView locationTextView = itemView.findViewById(R.id.locationTextView);
 //        TextView timestampTextView = itemView.findViewById(R.id.timestampTextView)
         TextView usernamenextTextView = itemView.findViewById(id.usernamenext);
+        //TextView totalcommentTextView = itemView.findViewById(id.totalcomment);
 
 
 

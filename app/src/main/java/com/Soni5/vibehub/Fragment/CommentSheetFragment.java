@@ -81,6 +81,9 @@ public class CommentSheetFragment extends BottomSheetDialogFragment {
         adapter= new CommentAdapter(datalist);
         recyclerView.setAdapter(adapter);
 
+        int peekHeight = getResources().getDisplayMetrics().heightPixels / 2;
+        getDialog().getWindow().setDimAmount(0.5f); // Optional: Adds dimming effect to the background
+        getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, peekHeight);
 
 
 
@@ -111,12 +114,12 @@ public class CommentSheetFragment extends BottomSheetDialogFragment {
                                     Log.d("TAG", "onComplete: " + tasks.getResult().getString("Username")+ Comment.get(finalI) );
 
 
-                                }
+                                }adapter.notifyDataSetChanged();
 
                             }
                         });
                     }
-                    adapter.notifyDataSetChanged();
+
 
 
 
@@ -231,11 +234,4 @@ public class CommentSheetFragment extends BottomSheetDialogFragment {
     }
 
 
-    @SuppressLint("ResourceType")
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // Set the dialog style to fullscreen
-        setStyle(STYLE_NORMAL, R.layout.fragment_comment_sheet);
-    }
 }
